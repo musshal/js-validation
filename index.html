@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Tambah Data Produk</title>
+
+  <style>
+    * {
+      padding: 0;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    body {
+      max-width: 325px;
+      margin-top: 32px;
+      padding: 12px;
+      border: 2px solid #4f81bd;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    th {
+      text-align: left;
+      font-weight: unset;
+    }
+
+    td {
+      padding: 3px;
+      text-align: left;
+    }
+
+    button {
+      padding: 5px;
+      margin: 20px 5px 0 0;
+    }
+
+    button:hover {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body onload="generateCaptcha()">
+  <h2>Form Tambah Data Produk</h2>
+  <form id="formTambahDataProduk" method="GET" autocomplete="on" action="" onsubmit="return validateForm()">
+    <table>
+      <tr>
+        <th>Nama Produk</th>
+        <td><input type="text" id="namaProduk" name="namaProduk" minlength="5" maxlength="30" size="23" required
+            autofocus></td>
+      </tr>
+      <tr>
+        <th>Deskripsi</th>
+        <td><textarea name="Deskripsi" id="Deskripsi" cols="25" rows="10" minlength="5" maxlength="100"
+            required></textarea></td>
+      </tr>
+      <tr>
+        <th>Kategori</th>
+        <td>
+          <select name="kategori" id="kategori" onchange="getSubCategory()" required>
+            <option value="">--Pilih Kategori</option>
+            <option value="baju">Baju</option>
+            <option value="elektronik">Elektronik</option>
+            <option value="alat tulis">Alat Tulis</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th>Sub Kategori</th>
+        <td>
+          <select name="subKategori" id="subKategori" required>
+            <option value="">--Pilih Sub Kategori--</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th>Harga Satuan</th>
+        <td><input type="number" size="10" required></td>
+      </tr>
+      <tr>
+        <th>Grosir</th>
+        <td>
+          <input type="radio" name="grosir" value="ya" onchange="getGrosir()">Ya
+          <br />
+          <input type="radio" name="grosir" value="tidak" onchange="getGrosir()">Tidak
+        </td>
+      </tr>
+      <tr>
+        <th>Harga Grosir</th>
+        <td><input type="number" name="hargaGrosir" id="hargaGrosir" size="10" disabled></td>
+      </tr>
+      <tr>
+        <th>Jasa Kirim</th>
+        <td>
+          <input type="checkbox" name="jasaKirim[]" value="jne">JNE
+          <br />
+          <input type="checkbox" name="jasaKirim[]" value="tiki">TIKI
+          <br />
+          <input type="checkbox" name="jasaKirim[]" value="sicepat">SiCepat
+          <br />
+          <input type="checkbox" name="jasaKirim[]" value="ninja express">Ninja Express
+          <br />
+          <input type="checkbox" name="jasaKirim[]" value="wahana">Wahana
+        </td>
+      </tr>
+      <tr>
+        <th>Captcha</th>
+        <td>
+          <input type="text" name="captchaText" size="7" style="text-align: center;" disabled>
+          <input type="text" name="captchaInput" size="7" required>
+        </td>
+      </tr>
+    </table>
+    <button type="submit">Submit</button>
+    <button type="reset">Reset</button>
+  </form>
+
+  <script>
+    function getSubCategory() {
+      const kategori = document.forms["formTambahDataProduk"]["kategori"].value;
+
+      if (kategori === "baju") {
+        document.getElementById("subKategori").innerHTML = `
+    <option value="">--Pilih Sub Kategori--</option>
+    <option value="baju pria">Baju Pria</option>
+    <option value="">Baju Wanita</option>
+    <option value="baju anak">Baju Anak</option>`;
+      }
+
+      if (kategori === "elektronik") {
+        document.getElementById("subKategori").innerHTML = `
+    <option value="">--Pilih Sub Kategori--</option>
+    <option value="mesin cuci">Mesin Cuci</option>
+    <option value="kulkas">Kulkas</option>
+    <option value="ac">AC</option>`;
+      }
+
+      if (kategori === "alat tulis") {
+        document.getElementById("subKategori").innerHTML = `
+    <option value="">--Pilih Sub Kategori--</option>
+    <option value="kertas">Kertas</option>
+    <option value="map">Map</option>
+    <option value="pulpen">Pulpen</option>`;
+      }
+    }
+
+    function getGrosir() {
+      const grosir = document.forms["formTambahDataProduk"]["grosir"].value;
+
+      if (grosir === "ya") {
+        document.getElementById("hargaGrosir").required = true;
+        document.getElementById("hargaGrosir").disabled = false;
+      }
+
+      if (grosir === "tidak") {
+        document.getElementById("hargaGrosir").required = false;
+        document.getElementById("hargaGrosir").disabled = true;
+      }
+    }
+
+    function generateCaptcha() {
+      let captcha = "";
+      let char = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+      for (let i = 0; i < 5; i++) {
+        captcha += char.charAt(Math.floor(Math.random() * char.length));
+      }
+
+      document.forms["formTambahDataProduk"]["captchaText"].value = captcha;
+    }
+
+    function validateForm() {
+      const jasaKirim = document.forms["formTambahDataProduk"]["jasaKirim[]"];
+      let countJasaKirim = 0;
+
+      for (let i = 0; i < jasaKirim.length; i++) {
+        if (jasaKirim[i].checked == true) {
+          countJasaKirim++;
+        }
+      }
+
+      if (countJasaKirim < 3) {
+        alert("Tolong pilih minimal 3 jasa kirim!");
+
+        return false;
+      }
+
+      if (document.forms["formTambahDataProduk"]["grosir"].value === "") {
+        alert("Tolong centang pilihan grosir!");
+
+        return false;
+      }
+
+      if (
+        document.forms["formTambahDataProduk"]["captchaInput"].value !==
+        document.forms["formTambahDataProduk"]["captchaText"].value
+      ) {
+        alert("Tolong ketik captcha dengan benar!");
+
+        return false;
+      }
+
+      return true;
+    }
+  </script>
+</body>
+
+</html>
